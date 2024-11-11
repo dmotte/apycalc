@@ -10,7 +10,7 @@ from datetime import timedelta
 from typing import TextIO
 
 
-def load_data(file: TextIO, kvalue: str = 'Open') -> list[dict]:
+def load_data(file: TextIO, krate: str = 'Open') -> list[dict]:
     '''
     Loads data from a CSV file.
 
@@ -24,7 +24,7 @@ def load_data(file: TextIO, kvalue: str = 'Open') -> list[dict]:
     for x in data:
         y = {}
         y['date'] = dt.strptime(x['Date'], '%Y-%m-%d').date()
-        y['value'] = float(x[kvalue])
+        y['rate'] = float(x[krate])
         data2.append(y)
 
     return data2
@@ -34,13 +34,13 @@ def save_data(data: list[dict], file: TextIO):
     '''
     Saves data into a CSV file
     '''
-    print('Date,Value,APY,APYMA', file=file)
+    print('Date,Rate,APY,APYMA', file=file)
 
     for entry in data:
         print(
             ','.join(
                 entry['date'],
-                entry['value'],
+                entry['rate'],
                 entry['apy'],
                 entry['apyma']),
             file=file)
@@ -62,7 +62,7 @@ def compute_stats(data_in: list[dict], window: int = 50) -> list[dict]:
 
         # Calculate APY
         entry_1yago = entries_1yago[-1]
-        entry['apy'] = entry['value'] / entry_1yago['value'] - 1
+        entry['apy'] = entry['rate'] / entry_1yago['rate'] - 1
 
         # Calculate the Moving Average
         entries_ma = [x for i, x in enumerate(data_in)
@@ -91,8 +91,8 @@ def main(argv=None):
                         help='Output file. If set to "-" then stdout is used '
                         '(default: -)')
 
-    parser.add_argument('-k', '--kvalue', type=str, default='Open',
-                        help='Column name of the asset values '
+    parser.add_argument('-k', '--krate', type=str, default='Open',
+                        help='Column name for the asset rate values '
                         '(default: "Open")')
 
     parser.add_argument('-w', '--window', type=int, default=50,
@@ -104,10 +104,10 @@ def main(argv=None):
     ############################################################################
 
     if args.file_in == '-':
-        data_in = load_data(sys.stdin, args.kvalue)
+        data_in = load_data(sys.stdin, args.krate)
     else:
         with open(args.file_in, 'r') as f:
-            data_in = load_data(f, args.kvalue)
+            data_in = load_data(f, args.krate)
 
     data_out = compute_stats(data_in, args.window)
 
