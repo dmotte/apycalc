@@ -36,26 +36,25 @@ def save_data(data: list[dict], file: TextIO):
     '''
     print('Date,Rate,APY,APYMA', file=file)
 
-    for entry in data:
-        print(
-            ','.join(
-                entry['date'],
-                entry['rate'],
-                entry['apy'],
-                entry['apyma']),
-            file=file)
+    for x in data:
+        print(','.join([
+            dt.strftime(x['date'], '%Y-%m-%d'),
+            str(x['rate']), str(x['apy']), str(x['apyma']),  # TODO format arg
+        ]), file=file)
 
 
-def compute_stats(data_in: list[dict], window: int = 50) -> list[dict]:
+def compute_stats(data: list[dict], window: int = 50):
     '''
     Computes APYs and Moving Averages
     '''
-    data_out = []
+    data = [x.copy() for x in data]
 
-    for index, entry in enumerate(data_in):
+    for index, entry in enumerate(data):
         # Get all entries which are at least 1 year older than the current one
         date_1yago = entry['date'] - timedelta(days=365)
-        entries_1yago = [x for x in data_in if x['date'] <= date_1yago]
+        entries_1yago = [x for x in data if x['date'] <= date_1yago]
+
+        # TODO optimize entry_1yago with backward search function
 
         if len(entries_1yago) == 0:
             continue
@@ -65,13 +64,12 @@ def compute_stats(data_in: list[dict], window: int = 50) -> list[dict]:
         entry['apy'] = entry['rate'] / entry_1yago['rate'] - 1
 
         # Calculate the Moving Average
-        entries_ma = [x for i, x in enumerate(data_in)
+        entries_ma = [x for i, x in enumerate(data)
                       if 'apy' in x
-                      and i <= index
-                      and i > index - window]
+                      and i > index - window and i <= index]
         entry['apyma'] = statistics.mean([x['apy'] for x in entries_ma])
 
-    return data_out
+        yield entry
 
 
 def main(argv=None):
