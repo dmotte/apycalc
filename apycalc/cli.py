@@ -49,6 +49,22 @@ def save_data(data: list[dict], file: TextIO, fmt: str = ''):
                                x['rate'], x['apy'], x['apyma']), file=file)
 
 
+def get_entry_1yago(data: list[dict], index: int) -> dict:
+    '''
+    Returns the entry that is one year (365 days) before the one whose index is
+    passed as a parameter.
+
+    Warning: it assumes that the entries are sorted by date in ascending order!
+    '''
+    date_1yago = data[index]['date'] - timedelta(days=365)
+
+    for i in range(index - 1, -1, -1):
+        if data[i]['date'] <= date_1yago:
+            return data[i]
+
+    return None
+
+
 def compute_stats(data: list[dict], window: int = 50):
     '''
     Computes APYs and Moving Averages
@@ -56,24 +72,16 @@ def compute_stats(data: list[dict], window: int = 50):
     data = [x.copy() for x in data]
 
     for index, entry in enumerate(data):
-        # Get all entries which are at least 1 year older than the current one
-        date_1yago = entry['date'] - timedelta(days=365)
-        entries_1yago = [x for x in data if x['date'] <= date_1yago]
-
-        # TODO optimize entry_1yago with backward search function
-
-        if len(entries_1yago) == 0:
+        entry_1yago = get_entry_1yago(data, index)
+        if entry_1yago is None:
             continue
 
-        # Calculate APY
-        entry_1yago = entries_1yago[-1]
         entry['apy'] = entry['rate'] / entry_1yago['rate'] - 1
 
-        # Calculate the Moving Average
         entries_ma = [x for i, x in enumerate(data)
                       if 'apy' in x
                       and i > index - window and i <= index]
-        entry['apyma'] = statistics.mean([x['apy'] for x in entries_ma])
+        entry['apyma'] = statistics.mean(x['apy'] for x in entries_ma)
 
         yield entry
 
