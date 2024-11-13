@@ -3,7 +3,6 @@
 TODO content
 
 TODO test `cli.py` thoroughly
-TODO test `example/plots.py` thoroughly
 
 ```bash
 # TODO
