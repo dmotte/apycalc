@@ -30,17 +30,23 @@ def load_data(file: TextIO, krate: str = 'Open') -> list[dict]:
     return data2
 
 
-def save_data(data: list[dict], file: TextIO):
+def save_data(data: list[dict], file: TextIO, fmt: str = ''):
     '''
     Saves data into a CSV file
     '''
+    data = [x.copy() for x in data]
+
+    if fmt != '':
+        for x in data:
+            for i, v in x.items():
+                if isinstance(v, float):
+                    x[i] = fmt.format(v)
+
     print('Date,Rate,APY,APYMA', file=file)
 
     for x in data:
-        print(','.join([
-            dt.strftime(x['date'], '%Y-%m-%d'),
-            str(x['rate']), str(x['apy']), str(x['apyma']),  # TODO format arg
-        ]), file=file)
+        print('%s,%s,%s,%s' % (dt.strftime(x['date'], '%Y-%m-%d'),
+                               x['rate'], x['apy'], x['apyma']), file=file)
 
 
 def compute_stats(data: list[dict], window: int = 50):
@@ -97,6 +103,11 @@ def main(argv=None):
                         help='Time window (number of entries) for the Moving '
                         'Average (default: 50)')
 
+    parser.add_argument('-f', '--format', type=str, default='',
+                        help='If specified, formats the float values (such as '
+                        'APYs and Moving Averages) with this format string '
+                        '(e.g. "{:.6f}")')
+
     args = parser.parse_args(argv[1:])
 
     ############################################################################
@@ -110,9 +121,9 @@ def main(argv=None):
     data_out = compute_stats(data_in, args.window)
 
     if args.file_out == '-':
-        save_data(data_out, sys.stdout)
+        save_data(data_out, sys.stdout, args.format)
     else:
         with open(args.file_out, 'w') as f:
-            save_data(data_out, f)
+            save_data(data_out, f, args.format)
 
     return 0
