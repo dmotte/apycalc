@@ -5,7 +5,7 @@
 
 :snake: [**APY**](https://www.investopedia.com/terms/a/apy.asp) (_Annual Percentage Yield_) **trend calculator**, with configurable MA (_Moving Average_).
 
-TODO description?
+> **Note**: APY is calculated over a period of **365 days**.
 
 ## Installation
 
