@@ -17,16 +17,36 @@ pip3 install apycalc
 
 ## Usage
 
-```bash
-# TODO
-cd example/
+There are some files in the [`example`](example) directory of this repo that can be useful to demonstrate how this tool works, so let's change directory:
 
+```bash
+cd example/
+```
+
+We need a Python **virtual environment** ("venv") with some packages to do the demonstration:
+
+```bash
 python3 -mvenv venv
 venv/bin/python3 -mpip install -r requirements.txt
+```
 
-# TODO write to customize path to the invoke.sh script. It's essentially the local path to the https://github.com/dmotte/misc/blob/main/python-scripts/ohlcv-fetchers/invoke.sh script
+Now we need to **fetch data** related to some asset. To do that, we can use the https://github.com/dmotte/misc/blob/main/python-scripts/ohlcv-fetchers/invoke.sh script.
+
+> **Note**: in the following commands, replace the local path of the `invoke.sh` script with the correct one.
+
+```bash
 ~/git/misc/python-scripts/ohlcv-fetchers/invoke.sh yahoo-finance '^GSPC' -i1wk -d2000-01-01T00Z -f'{:.6f}' > ohlcv-SPX500.csv
+```
+
+Now that we have the data, we can **compute the APY and MA values**:
+
+```bash
 python3 -mapycalc -w104 -f'{:.6f}' < ohlcv-SPX500.csv > apy-SPX500.csv
+```
+
+And finally display some nice plots using the [`example/plots.py`](plots.py) script (which uses the [_Plotly_](https://github.com/plotly/plotly.py) Python library):
+
+```bash
 venv/bin/python3 plots.py -ra < apy-SPX500.csv
 ```
 
