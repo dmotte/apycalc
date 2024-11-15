@@ -17,7 +17,7 @@ pip3 install apycalc
 
 ## Usage
 
-There are some files in the [`example`](example) directory of this repo that can be useful to demonstrate how this tool works, so let's change directory:
+There are some files in the [`example`](example) directory of this repo that can be useful to demonstrate how this tool works, so let's change directory first:
 
 ```bash
 cd example/
@@ -30,7 +30,7 @@ python3 -mvenv venv
 venv/bin/python3 -mpip install -r requirements.txt
 ```
 
-Now we need to **fetch data** related to some asset. To do that, we can use the https://github.com/dmotte/misc/blob/main/python-scripts/ohlcv-fetchers/invoke.sh script.
+Now we need to **fetch data** related to some asset. To do that, we can use https://github.com/dmotte/misc/blob/main/python-scripts/ohlcv-fetchers/yahoo-finance.py.
 
 > **Note**: in the following commands, replace the local path of the `invoke.sh` script with the correct one.
 
@@ -44,7 +44,7 @@ Now that we have the data, we can **compute the APY and MA values**:
 python3 -mapycalc -w104 -f'{:.6f}' < ohlcv-SPX500.csv > apy-SPX500.csv
 ```
 
-And finally display some nice plots using the [`example/plots.py`](plots.py) script (which uses the [_Plotly_](https://github.com/plotly/plotly.py) Python library):
+And finally display some nice **plots** using the [`plots.py`](example/plots.py) script (which uses the [_Plotly_](https://github.com/plotly/plotly.py) Python library):
 
 ```bash
 venv/bin/python3 plots.py -ra < apy-SPX500.csv
