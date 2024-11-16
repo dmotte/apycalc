@@ -41,13 +41,13 @@ Now we need to **fetch data** related to some asset. To do that, we can use http
 Now that we have the data, we can **compute the APY and MA values**:
 
 ```bash
-python3 -mapycalc -w104 -f'{:.6f}' < ohlcv-SPX500.csv > apy-SPX500.csv
+python3 -mapycalc -w104 -f'{:.6f}' ohlcv-SPX500.csv apy-SPX500.csv
 ```
 
 And finally display some nice **plots** using the [`plots.py`](example/plots.py) script (which uses the [_Plotly_](https://github.com/plotly/plotly.py) Python library):
 
 ```bash
-venv/bin/python3 plots.py -ra < apy-SPX500.csv
+venv/bin/python3 plots.py -ra apy-SPX500.csv
 ```
 
 For more details on how to use this command, you can also refer to its help message (`--help`).
