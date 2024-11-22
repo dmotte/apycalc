@@ -30,17 +30,20 @@ def load_data(file: TextIO, krate: str = 'Open') -> list[dict]:
     return data2
 
 
-def save_data(data: list[dict], file: TextIO, fmt: str = ''):
+def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
+              fmt_yield: str = ''):
     '''
     Saves data into a CSV file
     '''
     data = [x.copy() for x in data]
 
-    if fmt != '':
+    if fmt_rate != '':
         for x in data:
-            for i, v in x.items():
-                if isinstance(v, float):
-                    x[i] = fmt.format(v)
+            x['rate'] = fmt_rate.format(x['rate'])
+    if fmt_yield != '':
+        for x in data:
+            x['apy'] = fmt_yield.format(x['apy'])
+            x['apyma'] = fmt_yield.format(x['apyma'])
 
     print('Date,Rate,APY,APYMA', file=file)
 
@@ -111,10 +114,12 @@ def main(argv=None):
                         help='Time window (number of entries) for the Moving '
                         'Average (default: 50)')
 
-    parser.add_argument('-f', '--format', type=str, default='',
-                        help='If specified, formats the float values (such as '
-                        'APYs and Moving Averages) with this format string '
-                        '(e.g. "{:.6f}")')
+    parser.add_argument('--fmt-rate', type=str, default='',
+                        help='If specified, formats the rate values with this '
+                        'format string (e.g. "{:.6f}")')
+    parser.add_argument('--fmt-yield', type=str, default='',
+                        help='If specified, formats the yield values with this '
+                        'format string (e.g. "{:.4f}")')
 
     args = parser.parse_args(argv[1:])
 
@@ -129,9 +134,9 @@ def main(argv=None):
     data_out = compute_stats(data_in, args.window)
 
     if args.file_out == '-':
-        save_data(data_out, sys.stdout, args.format)
+        save_data(data_out, sys.stdout, args.fmt_rate, args.fmt_yield)
     else:
         with open(args.file_out, 'w') as f:
-            save_data(data_out, f, args.format)
+            save_data(data_out, f, args.fmt_rate, args.fmt_yield)
 
     return 0
