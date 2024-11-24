@@ -125,18 +125,24 @@ def main(argv=None):
 
     ############################################################################
 
+    def lambda_read(file: TextIO):
+        return load_data(file, args.krate)
+
     if args.file_in == '-':
-        data_in = load_data(sys.stdin, args.krate)
+        data_in = lambda_read(sys.stdin)
     else:
         with open(args.file_in, 'r') as f:
-            data_in = load_data(f, args.krate)
+            data_in = lambda_read(f)
 
     data_out = compute_stats(data_in, args.window)
 
+    def lambda_write(data: list[dict], file: TextIO):
+        return save_data(data, file, args.fmt_rate, args.fmt_yield)
+
     if args.file_out == '-':
-        save_data(data_out, sys.stdout, args.fmt_rate, args.fmt_yield)
+        lambda_write(data_out, sys.stdout)
     else:
         with open(args.file_out, 'w') as f:
-            save_data(data_out, f, args.fmt_rate, args.fmt_yield)
+            lambda_write(data_out, f)
 
     return 0
