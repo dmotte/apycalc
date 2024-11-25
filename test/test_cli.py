@@ -5,7 +5,7 @@ import textwrap
 
 from datetime import date
 
-from apycalc import load_data, save_data
+from apycalc import load_data, save_data, get_entry_1yago
 
 
 def test_load_data():
@@ -74,3 +74,23 @@ def test_save_data():
     buf.seek(0)
 
     assert buf.read() == csv
+
+
+def test_get_entry_1yago():
+    data = [
+        {'date': date(2001, 1, 1), 'rate': 101},
+        {'date': date(2001, 5, 5), 'rate': 105},
+        {'date': date(2001, 9, 9), 'rate': 109},
+        {'date': date(2002, 1, 1), 'rate': 201},
+        {'date': date(2002, 4, 4), 'rate': 204},
+        {'date': date(2002, 7, 7), 'rate': 207},
+        {'date': date(2002, 10, 10), 'rate': 210},
+    ]
+
+    assert get_entry_1yago(data, 0) is None
+    assert get_entry_1yago(data, 1) is None
+    assert get_entry_1yago(data, 2) is None
+    assert get_entry_1yago(data, 3) == {'date': date(2001, 1, 1), 'rate': 101}
+    assert get_entry_1yago(data, 4) == {'date': date(2001, 1, 1), 'rate': 101}
+    assert get_entry_1yago(data, 5) == {'date': date(2001, 5, 5), 'rate': 105}
+    assert get_entry_1yago(data, 6) == {'date': date(2001, 9, 9), 'rate': 109}
