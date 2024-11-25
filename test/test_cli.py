@@ -18,18 +18,12 @@ def test_load_data():
 
     data = load_data(io.StringIO(csv))
 
-    assert data[0]['date'] == date(2000, 1, 1)
-    assert data[0]['rate'] == 10
-    assert data[1]['date'] == date(2000, 1, 8)
-    assert data[1]['rate'] == 12
-    assert data[2]['date'] == date(2000, 1, 15)
-    assert data[2]['rate'] == 13
+    assert data[0] == {'date': date(2000, 1, 1), 'rate': 10}
+    assert data[1] == {'date': date(2000, 1, 8), 'rate': 12}
+    assert data[2] == {'date': date(2000, 1, 15), 'rate': 13}
 
     data = load_data(io.StringIO(csv), krate='Close')
 
-    assert data[0]['date'] == date(2000, 1, 1)
-    assert data[0]['rate'] == 12
-    assert data[1]['date'] == date(2000, 1, 8)
-    assert data[1]['rate'] == 13
-    assert data[2]['date'] == date(2000, 1, 15)
-    assert data[2]['rate'] == 18.5
+    assert data[0] == {'date': date(2000, 1, 1), 'rate': 12}
+    assert data[1] == {'date': date(2000, 1, 8), 'rate': 13}
+    assert data[2] == {'date': date(2000, 1, 15), 'rate': 18.5}
