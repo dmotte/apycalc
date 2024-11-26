@@ -3,6 +3,8 @@
 import io
 import textwrap
 
+import pytest
+
 from datetime import date
 
 from apycalc import load_data, save_data, get_entry_1yago, compute_stats
@@ -18,15 +20,19 @@ def test_load_data():
 
     data = load_data(io.StringIO(csv))
 
-    assert data[0] == {'date': date(2000, 1, 1), 'rate': 10}
-    assert data[1] == {'date': date(2000, 1, 8), 'rate': 12}
-    assert data[2] == {'date': date(2000, 1, 15), 'rate': 13}
+    assert data == [
+        {'date': date(2000, 1, 1), 'rate': 10},
+        {'date': date(2000, 1, 8), 'rate': 12},
+        {'date': date(2000, 1, 15), 'rate': 13},
+    ]
 
     data = load_data(io.StringIO(csv), krate='Close')
 
-    assert data[0] == {'date': date(2000, 1, 1), 'rate': 12}
-    assert data[1] == {'date': date(2000, 1, 8), 'rate': 13}
-    assert data[2] == {'date': date(2000, 1, 15), 'rate': 18.5}
+    assert data == [
+        {'date': date(2000, 1, 1), 'rate': 12},
+        {'date': date(2000, 1, 8), 'rate': 13},
+        {'date': date(2000, 1, 15), 'rate': 18.5},
+    ]
 
 
 def test_save_data():
@@ -94,6 +100,9 @@ def test_get_entry_1yago():
     assert get_entry_1yago(data, 4) == {'date': date(2001, 1, 1), 'rate': 101}
     assert get_entry_1yago(data, 5) == {'date': date(2001, 5, 5), 'rate': 105}
     assert get_entry_1yago(data, 6) == {'date': date(2001, 9, 9), 'rate': 109}
+
+    with pytest.raises(IndexError):  # List index out of range
+        get_entry_1yago(data, 7)
 
 
 def test_compute_stats():
