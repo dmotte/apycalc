@@ -5,7 +5,7 @@ import textwrap
 
 from datetime import date
 
-from apycalc import load_data, save_data, get_entry_1yago
+from apycalc import load_data, save_data, get_entry_1yago, compute_stats
 
 
 def test_load_data():
@@ -94,3 +94,41 @@ def test_get_entry_1yago():
     assert get_entry_1yago(data, 4) == {'date': date(2001, 1, 1), 'rate': 101}
     assert get_entry_1yago(data, 5) == {'date': date(2001, 5, 5), 'rate': 105}
     assert get_entry_1yago(data, 6) == {'date': date(2001, 9, 9), 'rate': 109}
+
+
+def test_compute_stats():
+    data_in = [
+        {'date': date(2001, 1, 1), 'rate': 101},
+        {'date': date(2001, 5, 5), 'rate': 105},
+        {'date': date(2001, 9, 9), 'rate': 109},
+        {'date': date(2002, 1, 1), 'rate': 201},
+        {'date': date(2002, 4, 4), 'rate': 204},
+        {'date': date(2002, 7, 7), 'rate': 207},
+        {'date': date(2002, 10, 10), 'rate': 210},
+    ]
+
+    data_out_win50 = [
+        {'date': date(2002, 1, 1), 'rate': 201,
+         'apy': 0.9900990099009901, 'apyma': 0.9900990099009901},
+        {'date': date(2002, 4, 4), 'rate': 204,
+         'apy': 1.0198019801980198, 'apyma': 1.004950495049505},
+        {'date': date(2002, 7, 7), 'rate': 207,
+         'apy': 0.9714285714285715, 'apyma': 0.9937765205091939},
+        {'date': date(2002, 10, 10), 'rate': 210,
+         'apy': 0.926605504587156, 'apyma': 0.9769837665286843},
+    ]
+
+    assert list(compute_stats(data_in)) == data_out_win50
+
+    data_out_win02 = [
+        {'date': date(2002, 1, 1), 'rate': 201,
+         'apy': 0.9900990099009901, 'apyma': 0.9900990099009901},
+        {'date': date(2002, 4, 4), 'rate': 204,
+         'apy': 1.0198019801980198, 'apyma': 1.004950495049505},
+        {'date': date(2002, 7, 7), 'rate': 207,
+         'apy': 0.9714285714285715, 'apyma': 0.9956152758132957},
+        {'date': date(2002, 10, 10), 'rate': 210,
+         'apy': 0.926605504587156, 'apyma': 0.9490170380078637},
+    ]
+
+    assert list(compute_stats(data_in, 2)) == data_out_win02
