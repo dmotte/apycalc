@@ -35,21 +35,32 @@ def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
     '''
     Saves data into a CSV file
     '''
-    data = [x.copy() for x in data]
+    fields = {
+        'date': {
+            'header': 'Date',
+            'fmt': lambda x: dt.strftime(x, '%Y-%m-%d'),
+        },
+        'rate': {
+            'header': 'Rate',
+            'fmt': (lambda x: x) if fmt_rate == ''
+            else (lambda x: fmt_rate.format(x)),
+        },
+        'apy': {
+            'header': 'APY',
+            'fmt': (lambda x: x) if fmt_yield == ''
+            else (lambda x: fmt_yield.format(x)),
+        },
+        'apyma': {
+            'header': 'APYMA',
+            'fmt': (lambda x: x) if fmt_yield == ''
+            else (lambda x: fmt_yield.format(x)),
+        },
+    }
 
-    if fmt_rate != '':
-        for x in data:
-            x['rate'] = fmt_rate.format(x['rate'])
-    if fmt_yield != '':
-        for x in data:
-            x['apy'] = fmt_yield.format(x['apy'])
-            x['apyma'] = fmt_yield.format(x['apyma'])
-
-    print('Date,Rate,APY,APYMA', file=file)
-
+    print(','.join(f['header'] for f in fields.values()), file=file)
     for x in data:
-        print('%s,%s,%s,%s' % (dt.strftime(x['date'], '%Y-%m-%d'),
-                               x['rate'], x['apy'], x['apyma']), file=file)
+        print(','.join(str(f['fmt'](x[k])) for k, f in fields.items()),
+              file=file)
 
 
 def get_entry_1yago(data: list[dict], index: int) -> dict:
