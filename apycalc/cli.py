@@ -42,25 +42,24 @@ def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
         },
         'rate': {
             'header': 'Rate',
-            'fmt': (lambda x: x) if fmt_rate == ''
+            'fmt': (lambda x: str(x)) if fmt_rate == ''
             else (lambda x: fmt_rate.format(x)),
         },
         'apy': {
             'header': 'APY',
-            'fmt': (lambda x: x) if fmt_yield == ''
+            'fmt': (lambda x: str(x)) if fmt_yield == ''
             else (lambda x: fmt_yield.format(x)),
         },
         'apyma': {
             'header': 'APYMA',
-            'fmt': (lambda x: x) if fmt_yield == ''
+            'fmt': (lambda x: str(x)) if fmt_yield == ''
             else (lambda x: fmt_yield.format(x)),
         },
     }
 
     print(','.join(f['header'] for f in fields.values()), file=file)
     for x in data:
-        print(','.join(str(f['fmt'](x[k])) for k, f in fields.items()),
-              file=file)
+        print(','.join(f['fmt'](x[k]) for k, f in fields.items()), file=file)
 
 
 def get_entry_1yago(data: list[dict], index: int) -> dict:
