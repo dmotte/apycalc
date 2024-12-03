@@ -35,10 +35,8 @@ def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
     '''
     Saves data into a CSV file
     '''
-    func_rate = (lambda x: str(x)) if fmt_rate == '' \
-        else (lambda x: fmt_rate.format(x))
-    func_yield = (lambda x: str(x)) if fmt_yield == '' \
-        else (lambda x: fmt_yield.format(x))
+    func_rate = str if fmt_rate == '' else (lambda x: fmt_rate.format(x))
+    func_yield = str if fmt_yield == '' else (lambda x: fmt_yield.format(x))
 
     fields = {
         'date': {
