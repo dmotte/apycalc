@@ -116,6 +116,8 @@ def test_compute_stats():
         {'date': date(2002, 10, 10), 'rate': 210},
     ]
 
+    data_in_copy = [x.copy() for x in data_in]
+
     data_out_win50 = [
         {'date': date(2002, 1, 1), 'rate': 201,
          'apy': 0.9900990099009901, 'apyma': 0.9900990099009901},
@@ -129,6 +131,8 @@ def test_compute_stats():
 
     assert list(compute_stats(data_in)) == data_out_win50
 
+    assert data_in == data_in_copy
+
     data_out_win02 = [
         {'date': date(2002, 1, 1), 'rate': 201,
          'apy': 0.9900990099009901, 'apyma': 0.9900990099009901},
@@ -141,3 +145,5 @@ def test_compute_stats():
     ]
 
     assert list(compute_stats(data_in, 2)) == data_out_win02
+
+    assert data_in == data_in_copy
