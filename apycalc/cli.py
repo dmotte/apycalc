@@ -35,26 +35,19 @@ def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
     '''
     Saves data into a CSV file
     '''
+    func_rate = (lambda x: str(x)) if fmt_rate == '' \
+        else (lambda x: fmt_rate.format(x))
+    func_yield = (lambda x: str(x)) if fmt_yield == '' \
+        else (lambda x: fmt_yield.format(x))
+
     fields = {
         'date': {
             'header': 'Date',
             'fmt': lambda x: dt.strftime(x, '%Y-%m-%d'),
         },
-        'rate': {
-            'header': 'Rate',
-            'fmt': (lambda x: str(x)) if fmt_rate == ''
-            else (lambda x: fmt_rate.format(x)),
-        },
-        'apy': {
-            'header': 'APY',
-            'fmt': (lambda x: str(x)) if fmt_yield == ''
-            else (lambda x: fmt_yield.format(x)),
-        },
-        'apyma': {
-            'header': 'APYMA',
-            'fmt': (lambda x: str(x)) if fmt_yield == ''
-            else (lambda x: fmt_yield.format(x)),
-        },
+        'rate': {'header': 'Rate', 'fmt': func_rate},
+        'apy': {'header': 'APY', 'fmt': func_yield},
+        'apyma': {'header': 'APYMA', 'fmt': func_yield},
     }
 
     print(','.join(f['header'] for f in fields.values()), file=file)
