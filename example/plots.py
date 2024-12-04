@@ -10,23 +10,19 @@ from typing import TextIO
 import plotly.express as px
 
 
-def load_data(file: TextIO) -> list[dict]:
+def load_data(file: TextIO):
     '''
     Loads data from a CSV file
     '''
     data = list(csv.DictReader(file))
 
-    # Customize data structure
-    data2 = []
     for x in data:
-        y = {}
-        y['date'] = dt.strptime(x['Date'], '%Y-%m-%d').date()
-        y['rate'] = float(x['Rate'])
-        y['apy'] = float(x['APY'])
-        y['apyma'] = float(x['APYMA'])
-        data2.append(y)
-
-    return data2
+        yield {
+            'date': dt.strptime(x['Date'], '%Y-%m-%d').date(),
+            'rate': float(x['Rate']),
+            'apy': float(x['APY']),
+            'apyma': float(x['APYMA']),
+        }
 
 
 def main(argv=None):
@@ -56,6 +52,8 @@ def main(argv=None):
     else:
         with open(args.file_in, 'r') as f:
             data = load_data(f)
+
+    data = list(data)
 
     if args.plot_rate:
         fig = px.line(

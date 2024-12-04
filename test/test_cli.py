@@ -18,7 +18,7 @@ def test_load_data():
         2000-01-15,13,22.1,13,18.5,18,789
     ''')
 
-    data = load_data(io.StringIO(csv))
+    data = list(load_data(io.StringIO(csv)))
 
     assert data == [
         {'date': date(2000, 1, 1), 'rate': 10},
@@ -26,7 +26,7 @@ def test_load_data():
         {'date': date(2000, 1, 15), 'rate': 13},
     ]
 
-    data = load_data(io.StringIO(csv), krate='Close')
+    data = list(load_data(io.StringIO(csv), krate='Close'))
 
     assert data == [
         {'date': date(2000, 1, 1), 'rate': 12},

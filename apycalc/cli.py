@@ -10,7 +10,7 @@ from datetime import timedelta
 from typing import TextIO
 
 
-def load_data(file: TextIO, krate: str = 'Open') -> list[dict]:
+def load_data(file: TextIO, krate: str = 'Open'):
     '''
     Loads data from a CSV file.
 
@@ -19,15 +19,11 @@ def load_data(file: TextIO, krate: str = 'Open') -> list[dict]:
     '''
     data = list(csv.DictReader(file))
 
-    # Customize data structure
-    data2 = []
     for x in data:
-        y = {}
-        y['date'] = dt.strptime(x['Date'], '%Y-%m-%d').date()
-        y['rate'] = float(x[krate])
-        data2.append(y)
-
-    return data2
+        yield {
+            'date': dt.strptime(x['Date'], '%Y-%m-%d').date(),
+            'rate': float(x[krate]),
+        }
 
 
 def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
