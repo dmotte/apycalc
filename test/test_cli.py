@@ -101,8 +101,9 @@ def test_get_entry_1yago():
     assert get_entry_1yago(data, 5) == {'date': date(2001, 5, 5), 'rate': 105}
     assert get_entry_1yago(data, 6) == {'date': date(2001, 9, 9), 'rate': 109}
 
-    with pytest.raises(IndexError):  # List index out of range
+    with pytest.raises(IndexError) as exc_info:
         get_entry_1yago(data, 7)
+    assert exc_info.value.args == ('list index out of range',)
 
 
 def test_compute_stats():
