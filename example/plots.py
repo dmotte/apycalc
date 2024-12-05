@@ -39,9 +39,9 @@ def main(argv=None):
                         '(default: -)')
 
     parser.add_argument('-r', '--plot-rate', action='store_true',
-                        help='Generate plot based on rates')
+                        help='Generate plot based on rate values')
     parser.add_argument('-a', '--plot-apy', action='store_true',
-                        help='Generate plot based on APYs and APYMAs')
+                        help='Generate plot based on APY values')
 
     args = parser.parse_args(argv[1:])
 
