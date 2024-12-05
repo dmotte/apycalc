@@ -30,7 +30,7 @@ def main(argv=None):
         argv = sys.argv
 
     parser = argparse.ArgumentParser(
-        description='Generate line plots based on asset rate and/or APY values'
+        description='Generate plots based on data computed with apycalc'
     )
 
     parser.add_argument('file_in', metavar='FILE_IN', type=str,
