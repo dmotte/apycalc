@@ -59,7 +59,7 @@ def main(argv=None):
             x='date',
             y='rate',
             template='plotly_dark',
-            title='Asset rate',
+            title='Rate values',
         )
         fig.show()
 
@@ -69,7 +69,7 @@ def main(argv=None):
             x='date',
             y=['apy', 'apyma'],
             template='plotly_dark',
-            title='APY and Moving Average',
+            title='APY values',
         )
         fig.show()
 
