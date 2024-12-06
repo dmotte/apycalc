@@ -4,6 +4,7 @@ import argparse
 import csv
 import sys
 
+from contextlib import ExitStack
 from datetime import datetime as dt
 from typing import TextIO
 
@@ -47,11 +48,10 @@ def main(argv=None):
 
     ############################################################################
 
-    if args.file_in == '-':
-        data = list(load_data(sys.stdin))
-    else:
-        with open(args.file_in, 'r') as f:
-            data = list(load_data(f))
+    with ExitStack() as stack:
+        file_in = (sys.stdin if args.file_in == '-'
+                   else stack.enter_context(open(args.file_in, 'r')))
+        data = list(load_data(file_in))
 
     if args.plot_rate:
         fig = px.line(

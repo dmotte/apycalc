@@ -5,6 +5,7 @@ import csv
 import statistics
 import sys
 
+from contextlib import ExitStack
 from datetime import datetime as dt
 from datetime import timedelta
 from typing import TextIO
@@ -122,24 +123,14 @@ def main(argv=None):
 
     ############################################################################
 
-    def lambda_read(file: TextIO):
-        return load_data(file, args.krate)
+    with ExitStack() as stack:
+        file_in = (sys.stdin if args.file_in == '-'
+                   else stack.enter_context(open(args.file_in, 'r')))
+        file_out = (sys.stdout if args.file_out == '-'
+                    else stack.enter_context(open(args.file_out, 'w')))
 
-    if args.file_in == '-':
-        data_in = lambda_read(sys.stdin)
-    else:
-        with open(args.file_in, 'r') as f:
-            data_in = lambda_read(f)
-
-    data_out = compute_stats(data_in, args.window)
-
-    def lambda_write(data: list[dict], file: TextIO):
-        return save_data(data, file, args.fmt_rate, args.fmt_yield)
-
-    if args.file_out == '-':
-        lambda_write(data_out, sys.stdout)
-    else:
-        with open(args.file_out, 'w') as f:
-            lambda_write(data_out, f)
+        data_in = load_data(file_in, args.krate)
+        data_out = compute_stats(data_in, args.window)
+        save_data(data_out, file_out, args.fmt_rate, args.fmt_yield)
 
     return 0
