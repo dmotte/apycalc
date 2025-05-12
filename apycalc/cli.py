@@ -98,19 +98,19 @@ def main(argv=None):
     parser.add_argument('file_in', metavar='FILE_IN', type=str,
                         nargs='?', default='-',
                         help='Input file. If set to "-" then stdin is used '
-                        '(default: -)')
+                        '(default: %(default)s)')
     parser.add_argument('file_out', metavar='FILE_OUT', type=str,
                         nargs='?', default='-',
                         help='Output file. If set to "-" then stdout is used '
-                        '(default: -)')
+                        '(default: %(default)s)')
 
     parser.add_argument('-k', '--krate', type=str, default='Open',
                         help='Column name for the asset rate values '
-                        '(default: "Open")')
+                        '(default: %(default)s)')
 
     parser.add_argument('-w', '--window', type=int, default=50,
                         help='Time window (number of entries) for the Moving '
-                        'Average (default: 50)')
+                        'Average (default: %(default)s)')
 
     parser.add_argument('--fmt-rate', type=str, default='',
                         help='If specified, formats the rate values with this '
