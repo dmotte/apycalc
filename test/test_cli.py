@@ -10,7 +10,7 @@ from datetime import date
 from apycalc import load_data, save_data, get_entry_1yago, compute_stats
 
 
-def test_load_data():
+def test_load_data() -> None:
     csv = textwrap.dedent('''\
         Date,Open,High,Low,Close,Adj Close,Volume
         2000-01-01,10,15,9,12,12,123
@@ -35,7 +35,7 @@ def test_load_data():
     ]
 
 
-def test_save_data():
+def test_save_data() -> None:
     data = [
         {'date': date(2000, 1, 1), 'rate': 11, 'apy': 0.12, 'apyma': 0.13},
         {'date': date(2000, 1, 2), 'rate': 21, 'apy': 0.22, 'apyma': 0.23},
@@ -82,7 +82,7 @@ def test_save_data():
     assert buf.read() == csv
 
 
-def test_get_entry_1yago():
+def test_get_entry_1yago() -> None:
     data = [
         {'date': date(2001, 1, 1), 'rate': 101},
         {'date': date(2001, 5, 5), 'rate': 105},
@@ -106,7 +106,7 @@ def test_get_entry_1yago():
     assert exc_info.value.args == ('list index out of range',)
 
 
-def test_compute_stats():
+def test_compute_stats() -> None:
     data_in = [
         {'date': date(2001, 1, 1), 'rate': 101},
         {'date': date(2001, 5, 5), 'rate': 105},

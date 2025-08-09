@@ -5,13 +5,14 @@ import csv
 import statistics
 import sys
 
+from collections.abc import Iterator
 from contextlib import ExitStack
 from datetime import datetime as dt
 from datetime import timedelta
-from typing import TextIO
+from typing import Any, TextIO
 
 
-def load_data(file: TextIO, krate: str = 'Open'):
+def load_data(file: TextIO, krate: str = 'Open') -> Iterator[dict[str, Any]]:
     '''
     Loads data from a CSV file.
 
@@ -28,7 +29,7 @@ def load_data(file: TextIO, krate: str = 'Open'):
 
 
 def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
-              fmt_yield: str = ''):
+              fmt_yield: str = '') -> None:
     '''
     Saves data into a CSV file
     '''
@@ -50,7 +51,7 @@ def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
         print(','.join(f['fmt'](x[k]) for k, f in fields.items()), file=file)
 
 
-def get_entry_1yago(data: list[dict], index: int) -> dict:
+def get_entry_1yago(data: list[dict], index: int) -> dict | None:
     '''
     Returns the entry that is one year (365 days) before the one whose index is
     passed as a parameter.
@@ -66,7 +67,8 @@ def get_entry_1yago(data: list[dict], index: int) -> dict:
     return None
 
 
-def compute_stats(data: list[dict], window: int = 50):
+def compute_stats(data: list[dict],
+                  window: int = 50) -> Iterator[dict[str, Any]]:
     '''
     Computes APYs and Moving Averages
     '''
@@ -87,7 +89,7 @@ def compute_stats(data: list[dict], window: int = 50):
         yield entry
 
 
-def main(argv=None):
+def main(argv: list[str] = None) -> int:
     if argv is None:
         argv = sys.argv
 
