@@ -89,7 +89,7 @@ def compute_stats(data: list[dict],
         yield entry
 
 
-def main(argv: list[str] = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv
 
