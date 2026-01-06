@@ -12,7 +12,8 @@ from datetime import timedelta
 from typing import Any, TextIO
 
 
-def load_data(file: TextIO, krate: str = 'Open') -> Iterator[dict[str, Any]]:
+def load_data(file: TextIO, krate: str = 'Open',
+              fill_zeros: bool = False) -> Iterator[dict[str, Any]]:
     '''
     Loads data from a CSV file.
 
@@ -21,11 +22,18 @@ def load_data(file: TextIO, krate: str = 'Open') -> Iterator[dict[str, Any]]:
     '''
     data = list(csv.DictReader(file))
 
+    prev_rate = 0
+
     for x in data:
-        yield {
-            'date': dt.strptime(x['Date'], '%Y-%m-%d').date(),
-            'rate': float(x[krate]),
-        }
+        date = dt.strptime(x['Date'], '%Y-%m-%d').date()
+        rate = float(x[krate])
+
+        if fill_zeros and rate == 0:
+            rate = prev_rate
+
+        yield {'date': date, 'rate': rate}
+
+        prev_rate = rate
 
 
 def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
@@ -114,6 +122,10 @@ def main(argv: list[str] | None = None) -> int:
                         help='Time window (number of entries) for the Moving '
                         'Average (default: %(default)s)')
 
+    parser.add_argument('-z', '--fill-zeros', action='store_true',
+                        help='Replace zero rate values with the corresponding '
+                        'value from the preceding line')
+
     parser.add_argument('--fmt-rate', type=str, default='',
                         help='If specified, formats the rate values with this '
                         'format string (e.g. "{:.6f}")')
@@ -131,7 +143,7 @@ def main(argv: list[str] | None = None) -> int:
         file_out = (sys.stdout if args.file_out == '-'
                     else stack.enter_context(open(args.file_out, 'w')))
 
-        data_in = load_data(file_in, args.krate)
+        data_in = load_data(file_in, args.krate, args.fill_zeros)
         data_out = compute_stats(data_in, args.window)
         save_data(data_out, file_out, args.fmt_rate, args.fmt_yield)
 

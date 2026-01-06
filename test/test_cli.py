@@ -34,6 +34,29 @@ def test_load_data() -> None:
         {'date': date(2000, 1, 15), 'rate': 18.5},
     ]
 
+    csv = textwrap.dedent('''\
+        Date,Open
+        2000-01-01,10
+        2000-01-08,0
+        2000-01-15,13
+    ''')
+
+    data = list(load_data(io.StringIO(csv)))
+
+    assert data == [
+        {'date': date(2000, 1, 1), 'rate': 10},
+        {'date': date(2000, 1, 8), 'rate': 0},
+        {'date': date(2000, 1, 15), 'rate': 13},
+    ]
+
+    data = list(load_data(io.StringIO(csv), fill_zeros=True))
+
+    assert data == [
+        {'date': date(2000, 1, 1), 'rate': 10},
+        {'date': date(2000, 1, 8), 'rate': 10},
+        {'date': date(2000, 1, 15), 'rate': 13},
+    ]
+
 
 def test_save_data() -> None:
     data = [
