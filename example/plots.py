@@ -60,7 +60,7 @@ def main(argv: list[str] | None = None) -> int:
             x='date',
             y='rate',
             template='plotly_dark',
-            title='Rate values',
+            title=f'Rate values: {args.file_in}',
         )
         fig.show()
 
@@ -70,7 +70,7 @@ def main(argv: list[str] | None = None) -> int:
             x='date',
             y=['apy', 'apyma'],
             template='plotly_dark',
-            title='APY values',
+            title=f'APY values: {args.file_in}',
         )
         fig.show()
 
