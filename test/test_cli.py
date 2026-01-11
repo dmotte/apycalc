@@ -9,6 +9,8 @@ from datetime import date
 
 from apycalc import load_data, save_data, get_entry_1yago, compute_stats
 
+from util import pfmt
+
 
 def test_load_data() -> None:
     csv = textwrap.dedent('''\
@@ -20,19 +22,19 @@ def test_load_data() -> None:
 
     data = list(load_data(io.StringIO(csv)))
 
-    assert data == [
-        {'date': date(2000, 1, 1), 'rate': 10},
-        {'date': date(2000, 1, 8), 'rate': 12},
-        {'date': date(2000, 1, 15), 'rate': 13},
-    ]
+    assert pfmt(data) == pfmt([
+        {'date': date(2000, 1, 1), 'rate': 10.0},
+        {'date': date(2000, 1, 8), 'rate': 12.0},
+        {'date': date(2000, 1, 15), 'rate': 13.0},
+    ])
 
     data = list(load_data(io.StringIO(csv), krate='Close'))
 
-    assert data == [
-        {'date': date(2000, 1, 1), 'rate': 12},
-        {'date': date(2000, 1, 8), 'rate': 13},
+    assert pfmt(data) == pfmt([
+        {'date': date(2000, 1, 1), 'rate': 12.0},
+        {'date': date(2000, 1, 8), 'rate': 13.0},
         {'date': date(2000, 1, 15), 'rate': 18.5},
-    ]
+    ])
 
     csv = textwrap.dedent('''\
         Date,Open
@@ -43,19 +45,19 @@ def test_load_data() -> None:
 
     data = list(load_data(io.StringIO(csv)))
 
-    assert data == [
-        {'date': date(2000, 1, 1), 'rate': 10},
-        {'date': date(2000, 1, 8), 'rate': 0},
-        {'date': date(2000, 1, 15), 'rate': 13},
-    ]
+    assert pfmt(data) == pfmt([
+        {'date': date(2000, 1, 1), 'rate': 10.0},
+        {'date': date(2000, 1, 8), 'rate': 0.0},
+        {'date': date(2000, 1, 15), 'rate': 13.0},
+    ])
 
     data = list(load_data(io.StringIO(csv), fill_zeros=True))
 
-    assert data == [
-        {'date': date(2000, 1, 1), 'rate': 10},
-        {'date': date(2000, 1, 8), 'rate': 10},
-        {'date': date(2000, 1, 15), 'rate': 13},
-    ]
+    assert pfmt(data) == pfmt([
+        {'date': date(2000, 1, 1), 'rate': 10.0},
+        {'date': date(2000, 1, 8), 'rate': 10.0},
+        {'date': date(2000, 1, 15), 'rate': 13.0},
+    ])
 
 
 def test_save_data() -> None:
@@ -142,8 +144,8 @@ def test_compute_stats() -> None:
 
     data_in_copy = [x.copy() for x in data_in]
     data_out = list(compute_stats(data_in))
-    assert data_in == data_in_copy
-    assert data_out == [
+    assert pfmt(data_in) == pfmt(data_in_copy)
+    assert pfmt(data_out) == pfmt([
         {'date': date(2002, 1, 1), 'rate': 201,
          'apy': 0.9900990099009901, 'apyma': 0.9900990099009901},
         {'date': date(2002, 4, 4), 'rate': 204,
@@ -152,12 +154,12 @@ def test_compute_stats() -> None:
          'apy': 0.9714285714285715, 'apyma': 0.9937765205091939},
         {'date': date(2002, 10, 10), 'rate': 210,
          'apy': 0.926605504587156, 'apyma': 0.9769837665286843},
-    ]
+    ])
 
     data_in_copy = [x.copy() for x in data_in]
     data_out = list(compute_stats(data_in, 2))
-    assert data_in == data_in_copy
-    assert data_out == [
+    assert pfmt(data_in) == pfmt(data_in_copy)
+    assert pfmt(data_out) == pfmt([
         {'date': date(2002, 1, 1), 'rate': 201,
          'apy': 0.9900990099009901, 'apyma': 0.9900990099009901},
         {'date': date(2002, 4, 4), 'rate': 204,
@@ -166,4 +168,4 @@ def test_compute_stats() -> None:
          'apy': 0.9714285714285715, 'apyma': 0.9956152758132957},
         {'date': date(2002, 10, 10), 'rate': 210,
          'apy': 0.926605504587156, 'apyma': 0.9490170380078637},
-    ]
+    ])
