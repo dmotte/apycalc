@@ -12,6 +12,14 @@ from datetime import timedelta
 from typing import Any, TextIO
 
 
+# Src: https://github.com/dmotte/misc/tree/main/snippets
+def normlz_num(x: int | float) -> int | float:
+    '''
+    Normalize number type by converting whole-number floats to int
+    '''
+    return int(x) if isinstance(x, float) and x.is_integer() else x
+
+
 def load_data(file: TextIO, krate: str = 'Open',
               fill_zeros: bool = False) -> Iterator[dict[str, Any]]:
     '''
@@ -56,7 +64,8 @@ def save_data(data: list[dict], file: TextIO, fmt_rate: str = '',
 
     print(','.join(f['header'] for f in fields.values()), file=file)
     for x in data:
-        print(','.join(f['fmt'](x[k]) for k, f in fields.items()), file=file)
+        print(','.join(f['fmt'](normlz_num(x[k])) for k, f in fields.items()),
+              file=file)
 
 
 def get_entry_1yago(data: list[dict], index: int) -> dict | None:

@@ -80,6 +80,18 @@ def test_save_data() -> None:
 
     assert buf.read() == csv
 
+    data = [  # Test with rate values as float
+        {'date': date(2000, 1, 1), 'rate': 11.0, 'apy': 0.12, 'apyma': 0.13},
+        {'date': date(2000, 1, 2), 'rate': 21.0, 'apy': 0.22, 'apyma': 0.23},
+        {'date': date(2000, 1, 3), 'rate': 31.0, 'apy': 0.32, 'apyma': 0.33},
+    ]
+
+    buf = io.StringIO()
+    save_data(data, buf)
+    buf.seek(0)
+
+    assert buf.read() == csv
+
     csv = textwrap.dedent('''\
         Date,Rate,APY,APYMA
         2000-01-01,11.000,0.12,0.13
