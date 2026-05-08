@@ -26,8 +26,8 @@ cd example/
 We need a Python **virtual environment** ("venv") with some packages to do the demonstration:
 
 ```bash
-python3 -mvenv venv
-venv/bin/python3 -mpip install -r requirements.txt
+python3 -mvenv .venv
+.venv/bin/python3 -mpip install -r requirements.txt
 ```
 
 Now we need to **fetch data** related to some asset. To do that, we can use https://github.com/dmotte/misc/blob/main/python-scripts/ohlcv-fetchers/yahoo-finance.py.
@@ -47,7 +47,7 @@ python3 -mapycalc -w104 --fmt-{rate,yield}='{:.6f}' ohlcv-SPX500.csv apy-SPX500.
 And finally display some nice **plots** using the [`plots.py`](example/plots.py) script (which uses the [_Plotly_](https://github.com/plotly/plotly.py) Python library):
 
 ```bash
-venv/bin/python3 plots.py -ra apy-SPX500.csv
+.venv/bin/python3 plots.py -ra apy-SPX500.csv
 ```
 
 For more details on how to use this command, you can also refer to its help message (`--help`).
@@ -57,8 +57,8 @@ For more details on how to use this command, you can also refer to its help mess
 If you want to contribute to this project, you can create a Python **virtual environment** ("venv") with the package in **editable** mode:
 
 ```bash
-python3 -mvenv venv
-venv/bin/python3 -mpip install -e .
+python3 -mvenv .venv
+.venv/bin/python3 -mpip install -e .
 ```
 
 This will link the package to the original location, so any changes to the code will reflect directly in your environment ([source](https://stackoverflow.com/a/35064498)).
@@ -66,6 +66,6 @@ This will link the package to the original location, so any changes to the code 
 If you want to run the tests:
 
 ```bash
-venv/bin/python3 -mpip install pytest
-venv/bin/python3 -mpytest test
+.venv/bin/python3 -mpip install pytest
+.venv/bin/python3 -mpytest test
 ```
